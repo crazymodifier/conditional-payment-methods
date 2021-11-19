@@ -109,9 +109,11 @@ if ( ! class_exists( 'WC_CPM_Controller' ) ) {
 				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/admin/class-wc-cpm-admin-notifications.php', 'WC_CPM_Admin_Notifications' );
 				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-cart.php', 'WC_CPM_By_Cart' );
 				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-location.php', 'WC_CPM_By_Location' );
+				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-type.php', 'WC_CPM_By_Type' );
 			} else {
 				include_once CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-cart.php';
 				include_once CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-location.php';
+				include_once CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-type.php';
 			}
 
 			include_once CPM_PLUGIN_DIRPATH . '/includes/compat/class-sa-wc-compatibility-3-8.php';
