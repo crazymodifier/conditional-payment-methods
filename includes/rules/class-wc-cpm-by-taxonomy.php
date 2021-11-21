@@ -14,13 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
-if(!class_exists('WC_CPM_By_Type')){
+if(!class_exists('WC_CPM_By_Taxonomy')){
     
     /**
 	 * Class for Validating Product type in Conditional Payment Methods For WooCommerce
 	 */
 
-    class WC_CPM_By_Type{
+    class WC_CPM_By_Taxonomy{
 
 
         /**
