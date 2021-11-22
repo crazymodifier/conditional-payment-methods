@@ -56,13 +56,27 @@ if(!class_exists('WC_CPM_By_Taxonomy')){
         public function get_rule_fields($fields)
         {
             $fields['product_type'] = array(
-				'title'     => __( 'Product Type', 'conditional-payment-methods-for-woocommerce' ),
+				'title'     => __( 'Product is/are', 'conditional-payment-methods-for-woocommerce' ),
 				'type'      => 'string',
-                'values'    => wc_get_product_types()
+                'values'    => $this->get_all_product_types()
 			);
+
+			// $fields['product_taxonomy'] = array(
+			// 	'title'     => __( 'Product Taxonomy', 'conditional-payment-methods-for-woocommerce' ),
+			// 	'type'      => 'string',
+            //     'values'    => wc_get_product_types()
+			// );
 
 			return $fields;
         }
+
+		private function get_all_product_types(){
+			$types = wc_get_product_types();
+			$types[] = ['Virtual'];
+			$types[] = ['Downloadable'];
+			
+			return $types;
+		}
     }
 
 }
