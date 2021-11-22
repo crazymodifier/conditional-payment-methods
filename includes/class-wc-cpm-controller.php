@@ -109,11 +109,11 @@ if ( ! class_exists( 'WC_CPM_Controller' ) ) {
 				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/admin/class-wc-cpm-admin-notifications.php', 'WC_CPM_Admin_Notifications' );
 				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-cart.php', 'WC_CPM_By_Cart' );
 				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-location.php', 'WC_CPM_By_Location' );
-				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-taxonomy.php', 'WC_CPM_By_Taxonomy' );
+				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-type.php', 'WC_CPM_By_Type' );
 			} else {
 				include_once CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-cart.php';
 				include_once CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-location.php';
-				include_once CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-taxonomy.php';
+				include_once CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-type.php';
 			}
 
 			include_once CPM_PLUGIN_DIRPATH . '/includes/compat/class-sa-wc-compatibility-3-8.php';
@@ -156,13 +156,33 @@ if ( ! class_exists( 'WC_CPM_Controller' ) ) {
 			foreach ( $payment_method_conditions['enabled'] as $enabled_conditions ) {
 
 				foreach ( $enabled_conditions['rules'] as $rules ) {
-					$obj = ( strpos( $rules['field'], 'billing' ) !== false || strpos( $rules['field'], 'shipping' ) !== false ) ? WC_CPM_By_Location::get_instance() : WC_CPM_By_Cart::get_instance();
+					
+					switch ($rules['field']) {
 
+						case 'cart_subtotal':
+							$obj = new WC_CPM_By_Cart() ;
+							break;
+
+						case 'product_type':
+							$obj = new WC_CPM_By_Taxonomy() ;
+							break;	
+
+						default:
+							$obj = new WC_CPM_By_Location() ;
+							break;
+
+					}
+
+					// if()
+
+					// $obj = ( strpos( $rules['field'], 'billing' ) !== false || strpos( $rules['field'], 'shipping' ) !== false ) ? WC_CPM_By_Location::get_instance() : WC_CPM_By_Cart::get_instance();
 					$is_valid = $obj->validate( $rules );
-
+					// echo '<pre>';print_r($enabled_conditions);echo '</pre>';
 					if ( ! $is_valid ) {
 						break;
 					}
+					
+
 				}
 
 				if ( ( ! empty( $enabled_conditions['exclude'] ) && $is_valid ) || ( empty( $enabled_conditions['exclude'] ) && ! $is_valid ) ) {

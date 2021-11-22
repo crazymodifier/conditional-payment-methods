@@ -144,6 +144,8 @@ if ( ! class_exists( 'WC_CPM_Admin_Settings' ) ) {
 				'and'                                 => __( 'And', 'conditional-payment-methods-for-woocommerce' ),
 				'andSmall'                            => __( 'and', 'conditional-payment-methods-for-woocommerce' ),
 				'onlyWhen'                            => __( 'only when', 'conditional-payment-methods-for-woocommerce' ),
+				'selectProductType'               => __( 'Select product type&hellip;', 'conditional-payment-methods-for-woocommerce' ),
+				'selectProductTaxonomy'				=> __( 'Select product categories&hellip;', 'conditional-payment-methods-for-woocommerce' ),
 			);
 
 			$payment_methods           = WC()->payment_gateways->get_available_payment_gateways();

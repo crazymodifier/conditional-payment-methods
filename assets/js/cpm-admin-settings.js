@@ -66,8 +66,28 @@ jQuery(
 				}
 
 				if ( ruleOptions != '' ) { // for select2.
+
+					var placeholder ='';
+					switch (settingsData.field) {
+						case 'billing_country':
+							placeholder = cpmSettingsParams.localizedStrings.selectBillingCountries;
+							break;
+						case 'shipping_country':
+							placeholder = cpmSettingsParams.localizedStrings.selectShippingCountries;
+							break;
+						case 'product_type':
+							placeholder = cpmSettingsParams.localizedStrings.selectProductType;
+							break;
+						case 'product_taxonomy':
+							placeholder = cpmSettingsParams.localizedStrings.selectProductTaxonomy;
+							break;
+						default:
+							placeholder = '';
+							break;
+					}
+
 					ruleValueHtml = '<div class="rule-value select-field">' +
-									'<select name="condition[' + params.conditionStatus + '][' + params.conditionIndex + '][rules][' + params.ruleIndex + '][value][]" class="multiselect cpm-select2" multiple="multiple" data-placeholder="' + ( ( 'billing_country' === settingsData.field ) ? cpmSettingsParams.localizedStrings.selectBillingCountries : cpmSettingsParams.localizedStrings.selectShippingCountries ) + '">' +
+									'<select name="condition[' + params.conditionStatus + '][' + params.conditionIndex + '][rules][' + params.ruleIndex + '][value][]" class="multiselect cpm-select2" multiple="multiple" data-placeholder="' + ( placeholder ) + '">' +
 											ruleOptions +
 									'</select>' +
 								'</div>';
