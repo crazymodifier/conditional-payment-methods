@@ -51,6 +51,29 @@ if(!class_exists('WC_CPM_By_Taxonomy')){
 
 			return self::$instance;
 		}
+
+		/**
+		 * Handle call to functions which is not available in this class
+		 *
+		 * @param string $function_name The function name.
+		 * @param array  $arguments Array of arguments passed while calling $function_name.
+		 * @return result of function call
+		 */
+		public function __call( $function_name, $arguments = array() ) {
+
+			global $wc_cpm_controller;
+
+			if ( ! is_callable( array( $wc_cpm_controller, $function_name ) ) ) {
+				return;
+			}
+
+			if ( ! empty( $arguments ) ) {
+				return call_user_func_array( array( $wc_cpm_controller, $function_name ), $arguments );
+			} else {
+				return call_user_func( array( $wc_cpm_controller, $function_name ) );
+			}
+
+		}
         
 
         public function get_rule_fields($fields)
@@ -64,7 +87,7 @@ if(!class_exists('WC_CPM_By_Taxonomy')){
 			$fields['product_taxonomy'] = array(
 				'title'     => __( 'Product Taxonomy', 'conditional-payment-methods-for-woocommerce' ),
 				'type'      => 'string',
-                'values'    => wc_get_product_types()
+                'values'    => $this->get_all_taxonomies()
 			);
 
 			return $fields;
@@ -76,6 +99,53 @@ if(!class_exists('WC_CPM_By_Taxonomy')){
 			$types[] = ['Downloadable'];
 			
 			return $types;
+		}
+
+		private function get_all_taxonomies(){
+			$taxonomies = [];
+			return $taxonomies;
+		}
+
+		/**
+		 * Validate a given rule
+		 *
+		 * @param array $rule Rule array.
+		 * @return boolean
+		 */
+		public function validate( $rule ) {
+			
+			$validate = false;
+			
+			switch ( $rule['field'] ) {
+
+				case 'product_type':
+
+					if ( isset( WC()->cart )){
+						$items = WC()->cart->get_cart();
+				
+						foreach($items as $item => $values) {
+							$product_id = $values['data']->get_id(); 
+
+							$productType = get_the_terms( $product_id,'product_type')[0]->slug;
+
+							if ( 'in' === $rule['operator'] ) {
+								$validate = in_array($productType, $rule['value'], true );
+							} elseif ( 'nin' === $rule['operator'] ) {
+								$validate = !in_array($productType, $rule['value'], true );
+							}
+
+							if($validate){
+								return $validate;
+							}
+						} 
+					}
+					
+					break;
+
+			}
+
+			return $validate;
+
 		}
     }
 
