@@ -58,3 +58,37 @@ function initialize_conditional_payment_methods_for_woocommerce() {
 
 }
 add_action( 'plugins_loaded', 'initialize_conditional_payment_methods_for_woocommerce' );
+
+
+
+
+// function get_taxomi(){
+// 	global $wpdb;
+// 	$page = $_REQUEST['page']??0;
+
+// 	if($page){
+// 		$limit = ($page - 1) * 5 .','. 5;
+// 	}
+// 	else{
+// 		$limit = '0,5';
+// 	}
+
+// 	$cats = $wpdb->get_results("SELECT * FROM `sa_terms`as st INNER JOIN sa_term_taxonomy as tt ON tt.term_id = st.term_id WHERE tt.taxonomy = 'product_cat' LIMIT $limit");
+// 	if(!empty($cats)){
+// 		foreach ($cats as $key => $value) {
+// 			$res['results'][] = array(
+// 				'id' => $value->slug,
+// 				'text' => $value->name
+// 			);
+// 		}
+// 		$res['total_count'] = 15;
+// 	}
+// 	else{
+// 		$res['results'][] = array(
+// 			);
+// 		$res['total_count'] = 0;
+// 	}
+	
+
+// 	echo json_encode($res); die;
+// }

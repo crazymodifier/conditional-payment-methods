@@ -23,8 +23,40 @@ jQuery(
 
 		// Function to handle all scripts that need to be iniitialized on document change.
 		var cpmScripts = function() {
+			console.log(cpmSettingsParams);
 			try {
+				var theSelect2Element = null;
 				$( '#wc_cpm_data' ).find( '.cpm-select2' ).select2();
+				$( '#wc_cpm_data' ).find( '.cpm-select2-taxonomy' ).select2({
+					
+					ajax: {
+						dataType : 'json',
+						url : cpmSettingsParams.ajax_url,
+						data: function (params) {
+							var query = {
+								taxonomy: $(theSelect2Element).data('taxonomy'),
+								search: params.term,
+								page: params.page || 1,
+								action : 'cpm_get_taxonomy_list'
+							}
+							
+							return query;
+						},
+						// paging
+						processResults : function(data) {
+							return {
+								results : data.results,// Background returned datasets
+								pagination : {
+									more: data.load_more// Total number of pages is 10, so 1-9 pages can be refreshed drop-down
+								}
+							};
+						},
+						cache : false,
+					
+					}
+				}).on('select2:open', function(e){ 
+					theSelect2Element = e.currentTarget; 
+				 });
 
 				$( '.cpm-rules' ).each(
 					function() {
@@ -68,6 +100,7 @@ jQuery(
 				if ( ruleOptions != '' ) { // for select2.
 
 					var placeholder ='';
+					var selectClass = 'cpm-select2';
 					switch (settingsData.field) {
 						case 'billing_country':
 							placeholder = cpmSettingsParams.localizedStrings.selectBillingCountries;
@@ -78,8 +111,9 @@ jQuery(
 						case 'product_type':
 							placeholder = cpmSettingsParams.localizedStrings.selectProductType;
 							break;
-						case 'product_taxonomy':
-							placeholder = cpmSettingsParams.localizedStrings.selectProductTaxonomy;
+						case 'product_cat':
+							placeholder = cpmSettingsParams.localizedStrings.selectProductCategory;
+							selectClass = 'cpm-select2-taxonomy';
 							break;
 						default:
 							placeholder = '';
@@ -87,7 +121,7 @@ jQuery(
 					}
 
 					ruleValueHtml = '<div class="rule-value select-field">' +
-									'<select name="condition[' + params.conditionStatus + '][' + params.conditionIndex + '][rules][' + params.ruleIndex + '][value][]" class="multiselect cpm-select2" multiple="multiple" data-placeholder="' + ( placeholder ) + '">' +
+									'<select name="condition[' + params.conditionStatus + '][' + params.conditionIndex + '][rules][' + params.ruleIndex + '][value][]" class="multiselect '+selectClass+'" multiple="multiple" data-placeholder="' + ( placeholder ) + '" data-taxonomy="'+settingsData.field+'">' +
 											ruleOptions +
 									'</select>' +
 								'</div>';

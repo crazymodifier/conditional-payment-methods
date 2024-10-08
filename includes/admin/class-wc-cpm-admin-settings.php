@@ -145,7 +145,7 @@ if ( ! class_exists( 'WC_CPM_Admin_Settings' ) ) {
 				'andSmall'                            => __( 'and', 'conditional-payment-methods-for-woocommerce' ),
 				'onlyWhen'                            => __( 'only when', 'conditional-payment-methods-for-woocommerce' ),
 				'selectProductType'               => __( 'Select product type&hellip;', 'conditional-payment-methods-for-woocommerce' ),
-				'selectProductTaxonomy'				=> __( 'Select product categories&hellip;', 'conditional-payment-methods-for-woocommerce' ),
+				'selectProductCategory'				=> __( 'Select product categories&hellip;', 'conditional-payment-methods-for-woocommerce' ),
 			);
 
 			$payment_methods           = WC()->payment_gateways->get_available_payment_gateways();
@@ -190,6 +190,7 @@ if ( ! class_exists( 'WC_CPM_Admin_Settings' ) ) {
 				'localizedStrings' => $localized_strings,
 				'settingsData'     => $settings_data,
 				'dataParams'       => $data_params,
+				'ajax_url'		   => admin_url('admin-ajax.php')
 			);
 			wp_localize_script( 'wc-cpm-settings-js', 'cpmSettingsParams', $js_params );
 

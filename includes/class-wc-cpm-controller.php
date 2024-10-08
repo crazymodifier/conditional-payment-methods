@@ -109,11 +109,11 @@ if ( ! class_exists( 'WC_CPM_Controller' ) ) {
 				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/admin/class-wc-cpm-admin-notifications.php', 'WC_CPM_Admin_Notifications' );
 				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-cart.php', 'WC_CPM_By_Cart' );
 				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-location.php', 'WC_CPM_By_Location' );
-				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-type.php', 'WC_CPM_By_Type' );
+				$this->load_class( CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-taxonomy.php', 'WC_CPM_By_Taxonomy' );
 			} else {
 				include_once CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-cart.php';
 				include_once CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-location.php';
-				include_once CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-type.php';
+				include_once CPM_PLUGIN_DIRPATH . '/includes/rules/class-wc-cpm-by-taxonomy.php';
 			}
 
 			include_once CPM_PLUGIN_DIRPATH . '/includes/compat/class-sa-wc-compatibility-3-8.php';
@@ -146,12 +146,19 @@ if ( ! class_exists( 'WC_CPM_Controller' ) ) {
 		public function filter_payment_gateways( $payment_gateways ) {
 
 			$payment_method_conditions = get_option( 'wc_payment_method_conditions', array() );
-
+			
+			
+			
 			if ( empty( $payment_method_conditions ) ) {
 				return $payment_gateways;
 			}
 
+			// $product = wc_get_product(14);
+			// print_r(WC()->countries->get_allowed_countries());
+
 			$is_valid = false;
+
+			$taxonomy_array = array('product_type','product_cat');
 
 			foreach ( $payment_method_conditions['enabled'] as $enabled_conditions ) {
 
@@ -163,21 +170,17 @@ if ( ! class_exists( 'WC_CPM_Controller' ) ) {
 							$obj = new WC_CPM_By_Cart() ;
 							break;
 
-						case 'product_type':
+						case (in_array( $rules['field'], $taxonomy_array )):
 							$obj = new WC_CPM_By_Taxonomy() ;
 							break;	
-
 						default:
 							$obj = new WC_CPM_By_Location() ;
 							break;
 
 					}
 
-					// if()
-
-					// $obj = ( strpos( $rules['field'], 'billing' ) !== false || strpos( $rules['field'], 'shipping' ) !== false ) ? WC_CPM_By_Location::get_instance() : WC_CPM_By_Cart::get_instance();
 					$is_valid = $obj->validate( $rules );
-					// echo '<pre>';print_r($enabled_conditions);echo '</pre>';
+					// echo '<pre>';print_r($is_valid);echo '</pre>';
 					if ( ! $is_valid ) {
 						break;
 					}
